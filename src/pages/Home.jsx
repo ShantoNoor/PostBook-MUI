@@ -1,13 +1,98 @@
-import { Button } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import Title from "../components/Title";
+import axios from "../utils/axios";
+import {
+  CircularProgress,
+  Divider,
+  Grid,
+  Snackbar,
+  Typography,
+} from "@mui/material";
+import PostCard from "../components/PostCard";
+import { useEffect, useState } from "react";
+import shuffleArray from "../utils/shuffleArray";
 
 const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [trendingPosts, setTrendingPosts] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  const { data, error, isPending } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      try {
+        const { data: posts } = await axios.get(`/posts`);
+        const { data: users } = await axios.get(`/users`);
+
+        const postsWithUserData = posts.map((post) => {
+          const user = users.find((user) => user.id === post.userId);
+          return {
+            ...post,
+            email: user.email,
+            name: user.name,
+            username: user.username,
+          };
+        });
+        return postsWithUserData;
+      } catch (err) {
+        console.error("Error fetching recipes:", err);
+      }
+    },
+  });
+
+  useEffect(() => {
+    function refresh() {
+      setOpen(true);
+      shuffleArray(data);
+      setPosts(data.splice(0, 6));
+      setTrendingPosts(data.splice(6, 4));
+    }
+    if (data?.length > 0) {
+      refresh();
+      const intervalId = setInterval(() => {
+        refresh();
+      }, 30000); // 30000ms = 30 seconds
+      return () => clearInterval(intervalId);
+    }
+  }, [data]);
+
+  if (isPending) return <CircularProgress />;
+  if (error) return "An error has occurred: " + error.message;
+
   return (
     <>
       <Title>Home</Title>
-      <div>
-        <Button variant="contained">Hello world</Button>
-      </div>
+
+      <Typography variant="h3" component="h3">
+        Trending Posts
+      </Typography>
+      <Divider sx={{ mb: 4, mt: 1 }} />
+      <Grid container spacing={4}>
+        {trendingPosts.map((post) => (
+          <Grid item xs={12} sm={12} md={6} key={post.id}>
+            <PostCard post={post} />
+          </Grid>
+        ))}
+      </Grid>
+
+      <Typography variant="h3" component="h3" sx={{ mt: 8 }}>
+        Posts
+      </Typography>
+      <Divider sx={{ mb: 4, mt: 1 }} />
+      <Grid container spacing={4}>
+        {posts.map((post) => (
+          <Grid item xs={12} sm={12} md={6} key={post.id}>
+            <PostCard post={post} />
+          </Grid>
+        ))}
+      </Grid>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={() => setOpen(false)}
+        message="Loading new posts..."
+      />
     </>
   );
 };

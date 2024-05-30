@@ -56,6 +56,11 @@ export default function ModeToggle() {
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) setTheme(storedTheme);
+    else {
+      const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
+      const systemTheme = prefersDarkMode.matches ? "dark" : "light";
+      setTheme(systemTheme);
+    }
   }, [theme, setTheme]);
 
   return (

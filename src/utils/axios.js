@@ -1,5 +1,7 @@
 import _axios from "axios";
 
-export const axios = _axios.create({
+const axios = _axios.create({
   baseURL: "https://jsonplaceholder.typicode.com",
 });
+
+export default axios;
