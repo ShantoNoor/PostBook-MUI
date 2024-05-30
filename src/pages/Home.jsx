@@ -23,8 +23,10 @@ const Home = () => {
     queryKey: ["posts"],
     queryFn: async () => {
       try {
-        const { data: posts } = await axios.get(`/posts`);
-        const { data: users } = await axios.get(`/users`);
+        const [{ data: posts }, { data: users }] = await Promise.all([
+          axios.get(`/posts`),
+          axios.get(`/users`),
+        ]);
 
         const postsWithUserData = posts.map((post) => {
           const user = users.find((user) => user.id === post.userId);
@@ -45,9 +47,9 @@ const Home = () => {
   useEffect(() => {
     function refresh() {
       setOpen(true);
-      shuffleArray(data);
-      setPosts(data.splice(0, 6));
-      setTrendingPosts(data.splice(6, 4));
+      const randomizedArray = shuffleArray(data);
+      setPosts(randomizedArray.splice(0, 6));
+      setTrendingPosts(randomizedArray.splice(6, 4));
     }
     if (data?.length > 0) {
       refresh();
@@ -91,7 +93,7 @@ const Home = () => {
       <Grid container spacing={4}>
         {trendingPosts.map((post) => (
           <Grid item xs={12} sm={12} md={6} key={post.id}>
-            <PostCard post={post} />
+            <PostCard post={post} cursor={true} />
           </Grid>
         ))}
       </Grid>
@@ -103,7 +105,7 @@ const Home = () => {
       <Grid container spacing={4}>
         {posts.map((post) => (
           <Grid item xs={12} sm={12} md={6} key={post.id}>
-            <PostCard post={post} />
+            <PostCard post={post} cursor={true} />
           </Grid>
         ))}
       </Grid>
