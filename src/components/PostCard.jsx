@@ -35,9 +35,11 @@ export default function PostCard({ post, cursor = false }) {
             </Avatar>
           }
           action={
-            <IconButton aria-label="Update Post">
-              <EditIcon />
-            </IconButton>
+            !cursor && (
+              <IconButton aria-label="Update Post">
+                <EditIcon />
+              </IconButton>
+            )
           }
           title={post.name}
           subheader={post.email}
@@ -54,7 +56,19 @@ export default function PostCard({ post, cursor = false }) {
               </Typography>
               <Divider sx={{ my: 4, mt: 1 }} />
 
-              <Box sx={{ display: "flex", flexDirection: "column", mb: 3 }}>
+              <Box
+                component="form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setComments([
+                    ...comments,
+                    { body: comment, email: "shantonoor900@gmail.com" },
+                  ]);
+                  setComment("");
+                  setOpen(true);
+                }}
+                sx={{ display: "flex", flexDirection: "column", mb: 3 }}
+              >
                 <TextField
                   id="outlined-basic"
                   label="Add a comment"
@@ -67,18 +81,7 @@ export default function PostCard({ post, cursor = false }) {
                     setComment(event.target.value);
                   }}
                 />
-                <Button
-                  onClick={() => {
-                    setComments([
-                      ...comments,
-                      { body: comment, email: "shantonoor900@gmail.com" },
-                    ]);
-                    setComment("");
-                    setOpen(true);
-                  }}
-                >
-                  Add Comment
-                </Button>
+                <Button type="submit">Add Comment</Button>
               </Box>
 
               <Stack direction="column" spacing={2}>
@@ -109,7 +112,7 @@ export default function PostCard({ post, cursor = false }) {
         open={open}
         autoHideDuration={5000}
         onClose={() => setOpen(false)}
-        message="Comment added successfully"
+        message="Comment added successfully!"
       />
     </>
   );
