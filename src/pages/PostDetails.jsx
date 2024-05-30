@@ -59,7 +59,7 @@ const PostDetails = () => {
 
   return (
     <>
-      <Title>Post Details</Title>
+      <Title>{`${data?.title} | Post Details`}</Title>
       <PostCard post={data} />
     </>
   );

@@ -36,7 +36,10 @@ export default function PostCard({ post, cursor = false }) {
           }
           action={
             !cursor && (
-              <IconButton aria-label="Update Post">
+              <IconButton
+                onClick={() => navigate(`/post-update/${post.id}`)}
+                aria-label="Update Post"
+              >
                 <EditIcon />
               </IconButton>
             )
@@ -45,7 +48,11 @@ export default function PostCard({ post, cursor = false }) {
           subheader={post.email}
         />
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body1" color="text.secondary">
+            Post Title: {post.title}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
             {post.body}
           </Typography>
 

@@ -18,6 +18,7 @@ import ThemeProvider from "./components/ThemeProvider.jsx";
 const Home = lazy(() => import("./pages/Home.jsx"));
 const PostCreate = lazy(() => import("./pages/PostCreate.jsx"));
 const PostDetails = lazy(() => import("./pages/PostDetails.jsx"));
+const PostUpdate = lazy(() => import("./pages/PostUpdate.jsx"));
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/post-details/:id",
         element: <PostDetails />,
+      },
+      {
+        path: "/post-update/:id",
+        element: <PostUpdate />,
       },
       {
         path: "/post-create",

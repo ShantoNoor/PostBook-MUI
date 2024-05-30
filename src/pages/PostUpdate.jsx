@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  Skeleton,
   Snackbar,
   Stack,
   TextField,
@@ -10,7 +11,8 @@ import {
 import Title from "../components/Title";
 import { useState } from "react";
 import axios from "../utils/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const PostCreate = () => {
   const [body, setBody] = useState("");
@@ -19,32 +21,60 @@ const PostCreate = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  const { id } = useParams();
+  const { data, error, isPending } = useQuery({
+    queryKey: ["post", id],
+    queryFn: async () => {
+      try {
+        const result = await axios.get(`/posts/${id}`);
+        setTitle(result.data.title);
+        setBody(result.data.body);
+        return result.data;
+      } catch (err) {
+        console.error("Error fetching recipes:", err);
+      }
+    },
+  });
+
   const handleSubmit = async () => {
-    setMessage("Adding new post...");
+    setMessage("Updating new post...");
     setOpen(true);
 
-    const result = await axios.post("/posts", {
+    const result = await axios.put(`/posts/${id}`, {
       title,
       body,
-      userId: 101,
+      userId: data.userId,
+      id,
     });
-    if (result.status === 201) {
+    
+    if (result.status === 200) {
       setMessage("Post added successfully!");
       setOpen(true);
       setTimeout(() => {
         setTitle("");
         setBody("");
-        navigate("/");
+        navigate(`/post-details/${id}`);
       }, 1000);
     }
   };
 
+  if (isPending)
+    return (
+      <Stack spacing={1}>
+        <Skeleton variant="rounded" height={30} />
+        <Skeleton variant="rounded" height={60} />
+        <Skeleton variant="rounded" height={120} />
+      </Stack>
+    );
+
+  if (error) return "An error has occurred: " + error.message;
+
   return (
     <>
-      <Title>Create New Post</Title>
+      <Title>{`${data?.title} | Post Update`}</Title>
 
       <Typography variant="h2" component="h2">
-        Create A New Post
+        Update Post
       </Typography>
       <Divider sx={{ mb: 4, mt: 1 }} />
 
@@ -81,7 +111,7 @@ const PostCreate = () => {
               setBody(event.target.value);
             }}
           />
-          <Button type="submit">Add Post</Button>
+          <Button type="submit">Update Post</Button>
         </Stack>
       </Box>
       <Snackbar

@@ -48,8 +48,8 @@ const Home = () => {
     function refresh() {
       setOpen(true);
       const randomizedArray = shuffleArray(data);
-      setPosts(randomizedArray.splice(0, 6));
-      setTrendingPosts(randomizedArray.splice(6, 4));
+      setTrendingPosts(randomizedArray.splice(0, 4));
+      setPosts(randomizedArray.splice(4, 12));
     }
     if (data?.length > 0) {
       refresh();
