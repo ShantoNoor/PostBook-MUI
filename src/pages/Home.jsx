@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import Title from "../components/Title";
 import axios from "../utils/axios";
 import {
-  CircularProgress,
+  Box,
   Divider,
   Grid,
+  Skeleton,
   Snackbar,
+  Stack,
   Typography,
 } from "@mui/material";
 import PostCard from "../components/PostCard";
@@ -56,7 +58,26 @@ const Home = () => {
     }
   }, [data]);
 
-  if (isPending) return <CircularProgress />;
+  if (isPending)
+    return (
+      <Grid container spacing={4}>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((_, idx) => (
+          <Grid item xs={12} sm={12} md={6} key={idx}>
+            <Stack spacing={1}>
+              <Stack direction="row" spacing={1}>
+                <Skeleton variant="circular" width={40} height={40} />
+                <Box sx={{ width: "100%" }}>
+                  <Skeleton variant="text" width={"100%"} />
+                  <Skeleton variant="text" width={"100%"} />
+                </Box>
+              </Stack>
+              <Skeleton variant="rounded" height={120} />
+            </Stack>
+          </Grid>
+        ))}
+      </Grid>
+    );
+
   if (error) return "An error has occurred: " + error.message;
 
   return (

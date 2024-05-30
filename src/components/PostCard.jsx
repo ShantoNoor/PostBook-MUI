@@ -5,10 +5,16 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
 
 export default function PostCard({ post }) {
+  const navigate = useNavigate();
+
   return (
-    <Card sx={{ cursor: "pointer", height: "100%" }}>
+    <Card
+      sx={{ cursor: "pointer", height: "100%" }}
+      onClick={() => navigate(`/post-details/${post.id}`)}
+    >
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: "#F08" }} aria-label="recipe">
