@@ -1,6 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
 import "./index.css";
 
 import "@fontsource/roboto/300.css";
@@ -8,19 +8,12 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Box, CircularProgress } from "@mui/material";
 import { HelmetProvider } from "react-helmet-async";
+import Layout from "./Layout.jsx";
+import ThemeProvider from "./components/ThemeProvider.jsx";
 
 const Home = lazy(() => import("./pages/Home.jsx"));
 const PostCreate = lazy(() => import("./pages/PostCreate.jsx"));
@@ -29,7 +22,7 @@ const PostDetails = lazy(() => import("./pages/PostDetails.jsx"));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Layout />,
     children: [
       {
         path: "/",
@@ -54,8 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Suspense fallback={<InitialLoader />}>
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
+          <ThemeProvider>
             <RouterProvider router={router} />
           </ThemeProvider>
         </HelmetProvider>
@@ -64,7 +56,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
-// eslint-disable-next-line react-refresh/only-export-components
 function InitialLoader() {
   return (
     <Box sx={{ textAlign: "center", mt: "222px" }}>

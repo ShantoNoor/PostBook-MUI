@@ -4,31 +4,21 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import UserAvater from "../components/UserAvater";
 import Stack from "@mui/material/Stack";
-import useAuth from "../hooks/useAuth";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Outlet } from "react-router-dom";
 
-import DashboardMenu from "../components/DashboardMenu";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import HomeIcon from "@mui/icons-material/Home";
+import DashboardMenu from "./components/DashboardMenu";
+import { Avatar } from "@mui/material";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
-import LegendToggleIcon from "@mui/icons-material/LegendToggle";
-import PeopleIcon from "@mui/icons-material/People";
-import HailIcon from "@mui/icons-material/Hail";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import ReviewsIcon from '@mui/icons-material/Reviews';
+import logo from "./assets/logo.png";
+import ModeToggle from "./components/ModeToggle";
 
 const drawerWidth = 240;
 
@@ -44,83 +34,16 @@ function Layout() {
   const drawer = (
     <Box>
       <Stack justifyContent="center" alignItems="center" spacing={1} my={4}>
-        <UserAvater size={75} />
+        <Avatar sx={{ width: 75, height: 75 }} alt={"logo"} src={logo} />
         <Typography variant="h6" component="span">
           PostBook
         </Typography>
       </Stack>
       <Divider />
-      <List>
-        {user.status === "user" && (
-          <DashboardMenu
-            menu={[
-              [
-                "Book Parcel",
-                "/dashboard/book-parcel",
-                <BookmarkAddIcon key={1} />,
-              ],
-              [
-                "My Parcels",
-                "/dashboard/my-parcels",
-                <BookmarksIcon key={2} />,
-              ],
-            ]}
-            setTitle={setTitle}
-          />
-        )}
-
-        {user.status === "delivery_man" && (
-          <DashboardMenu
-            menu={[
-              [
-                "My Delivery List",
-                "/dashboard/my-delivery-list",
-                <FormatListBulletedIcon key={1} />,
-              ],
-              [
-                "My Reviews",
-                "/dashboard/my-reviews",
-                <ReviewsIcon key={2} />,
-              ],
-            ]}
-            setTitle={setTitle}
-          />
-        )}
-
-        {user.status === "admin" && (
-          <DashboardMenu
-            menu={[
-              [
-                "Statistics",
-                "/dashboard/statistics",
-                <LegendToggleIcon key={1} />,
-              ],
-              [
-                "All Parcels",
-                "/dashboard/all-parcels",
-                <LocalMallIcon key={2} />,
-              ],
-              ["All Users", "/dashboard/all-users", <PeopleIcon key={2} />],
-              [
-                "All Delivery Man",
-                "/dashboard/all-delivery-man",
-                <HailIcon key={2} />,
-              ],
-            ]}
-            setTitle={setTitle}
-          />
-        )}
-      </List>
-      <Divider />
       <DashboardMenu
         menu={[
-          [
-            "My Profile",
-            "/dashboard/my-profile",
-            <AccountCircleIcon key={1} />,
-          ],
           ["Home", "/", <HomeIcon key={1} />],
-          ["Sign Out", "/sign-out", <ExitToAppIcon key={2} />],
+          ["Create Post", "/post-create", <AddBoxIcon key={1} />],
         ]}
         setTitle={setTitle}
       />
@@ -137,18 +60,35 @@ function Layout() {
         }}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {title}
-          </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { sm: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div">
+                {title}
+              </Typography>
+            </Box>
+            <ModeToggle />
+          </Box>
         </Toolbar>
       </AppBar>
       <Box
@@ -197,7 +137,7 @@ function Layout() {
         }}
       >
         <Toolbar />
-        <Outlet context={{ setTitle }} />
+        <Outlet />
       </Box>
     </Box>
   );
